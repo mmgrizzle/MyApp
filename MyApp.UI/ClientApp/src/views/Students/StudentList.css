@@ -1,0 +1,16 @@
+﻿.student-list-container {
+    display: grid;
+    grid-template-rows: auto auto 1fr;
+    height: 100%;
+    grid-template-columns: auto auto auto;
+    background-color: #2196F3;
+    padding: 10px;
+}
+
+.student-list-container .details-list {
+    min-height: 100%;
+}
+
+.ms-List-cell {
+    cursor: pointer !important;
+}

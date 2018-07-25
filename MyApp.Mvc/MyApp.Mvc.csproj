@@ -12,6 +12,8 @@
 
   <ItemGroup>
     <ProjectReference Include="..\MyApp.API\MyApp.Api.csproj" />
+    <ProjectReference Include="..\MyApp.Application\MyApp.Application.csproj" />
+    <ProjectReference Include="..\MyApp.Infrastructure\MyApp.Infrastructure.csproj" />
   </ItemGroup>
 
 </Project>

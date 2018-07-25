@@ -1,0 +1,35 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.1</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Dapper" Version="1.50.5" />
+    <PackageReference Include="FluentValidation" Version="7.6.104" />
+    <PackageReference Include="MediatR" Version="5.0.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\MyApp.Domain\MyApp.Domain.csproj" />
+    <ProjectReference Include="..\MyApp.Persistance\MyApp.Persistance.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Courses\Commands\" />
+    <Folder Include="Courses\Models\" />
+    <Folder Include="Courses\Validators\" />
+    <Folder Include="Courses\Queries\" />
+    <Folder Include="Professors\Validators\" />
+    <Folder Include="Reports\Commands\" />
+    <Folder Include="Reports\Models\" />
+    <Folder Include="Reports\Queries\" />
+    <Folder Include="Reports\Validators\" />
+    <Folder Include="StudentCourse\Commands\" />
+    <Folder Include="StudentCourse\Models\" />
+    <Folder Include="StudentCourse\Queries\" />
+    <Folder Include="StudentCourse\Validators\" />
+    <Folder Include="Students\Validators\" />
+  </ItemGroup>
+
+</Project>

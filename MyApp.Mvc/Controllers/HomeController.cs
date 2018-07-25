@@ -9,7 +9,6 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Protocols.OpenIdConnect;
-using MyApp.Api.Models;
 using MyApp.Mvc.Models;
 using MyApp.Mvc.Services;
 using MyApp.Mvc.ViewModels;
@@ -33,57 +32,59 @@ namespace MyApp.Mvc.Controllers
             return View();
         }
 
-        //public async Task<IActionResult> API()
-        //{
-        //    var httpClient = await _myAppHttpClient.GetClient();
-        //    var response = await httpClient.GetAsync("api/suppliers").ConfigureAwait(false);
-
-        //    if (response.IsSuccessStatusCode)
-        //    {
-        //        var suppliersAsString = await response.Content.ReadAsStringAsync().ConfigureAwait
-        //    }
-            
-        //}
-
+        //method launches the about view- requires admin role and api access to view suppliers & user address
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> About()
         {
             ViewData["Message"] = "Your application description page.";
 
-           
-            // call the API
-           
+            //gets user info about authorization from the UserInfoEndpoint
             var discoveryClient = new DiscoveryClient("https://localhost:44357/");
             var metaDataResponse = await discoveryClient.GetAsync();
             var userInfoClient = new UserInfoClient(metaDataResponse.UserInfoEndpoint);
             var accessToken = await HttpContext
                 .GetTokenAsync(OpenIdConnectParameterNames.AccessToken);
-            var response = await userInfoClient.GetAsync(accessToken);
 
+            //response from user endpoint
+            var userResponse = await userInfoClient.GetAsync(accessToken);
+
+            if (userResponse.IsError)  //error handling for user info endpoint access
+            {
+                throw new Exception(
+                    "Problem accessing the UserInfo endpoint."
+                    , userResponse.Exception);
+            }
+
+            // call the API
             var httpClient = await _myAppHttpClient.GetClient();
+
+            //response from http api call
             var httpResponse = await httpClient.GetAsync("api/suppliers").ConfigureAwait(false);
 
 
-            if (httpResponse.IsSuccessStatusCode)
+            if (httpResponse.IsSuccessStatusCode)  //validates httpResponse 
             {
-                var address = response.Claims.FirstOrDefault(c => c.Type == "address")?.Value;
+                //creates a value from the claims in the user info endpoint
+                var address = userResponse.Claims.FirstOrDefault(c => c.Type == "address")?.Value;
 
+                //puts the suppliers from the api into a string
                 var suppliersAsString = await httpResponse.Content.ReadAsStringAsync().ConfigureAwait(false);
 
+                //creates a view model from the address and the suppliers 
                 var aboutViewModel = new AboutViewModel(address,
                     JsonConvert.DeserializeObject<IList<Supplier>>(suppliersAsString).ToList());
 
                 return View(aboutViewModel);
             }
 
-            if (response.IsError)
+            //returns access denied if unauthorized user 
+            else if(httpResponse.StatusCode == System.Net.HttpStatusCode.Unauthorized || 
+                    httpResponse.StatusCode == System.Net.HttpStatusCode.Unauthorized)
             {
-                throw new Exception(
-                    "Problem accessing the UserInfo endpoint."
-                    , response.Exception);
+                return RedirectToAction("AccessDenied", "Authorization");
             }
-            else
-                return View();
+            throw new Exception ($"A problem happened while calling the API: {httpResponse.ReasonPhrase}");
+           
         }
 
         public IActionResult Contact()

@@ -27,6 +27,12 @@ namespace MyApp.Api.Controllers
         [HttpGet]
         public IEnumerable<Supplier> GetSuppliers()
         {
+            //identifies current user via sub claim 
+            var ownerId = User.Claims.FirstOrDefault(c => c.Type == "sub").Type;
+
+            //get from repo
+            //var suppliersFromRepo = _supplierRepository.GetSuppliers(ownerId);
+
             return _context.Suppliers;
         }
 

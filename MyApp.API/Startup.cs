@@ -1,18 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using IdentityServer4.AccessTokenValidation;
+﻿using IdentityServer4.AccessTokenValidation;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
-using MyApp.Api.Context;
+using MyApp.Persistance;
 
 namespace MyApp.API
 {
@@ -43,7 +36,7 @@ namespace MyApp.API
                     options.ApiName = "myapi";
                 });
 
-            services.AddDbContext<ApplicationDbContext>(options => 
+            services.AddDbContext<MyAppDbContext>(options => 
                 options.UseSqlServer(connectionString));
         }
 
